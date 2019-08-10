@@ -1,5 +1,6 @@
 import {AxiosInstance} from "axios";
 import axios from "axios";
+import * as os from "os";
 
 const cache: { [baseUrl: string]: AxiosInstance } = {};
 
@@ -22,13 +23,67 @@ function getClient(baseURL: string = "", timeout: number = 17000) {
     return client;
 }
 
+function isPrivate(address: string) {
+    return /^(::f{4}:)?10\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/i
+            .test(address) ||
+        /^(::f{4}:)?192\.168\.([0-9]{1,3})\.([0-9]{1,3})$/i.test(address) ||
+        /^(::f{4}:)?172\.(1[6-9]|2\d|30|31)\.([0-9]{1,3})\.([0-9]{1,3})$/i
+            .test(address) ||
+        /^(::f{4}:)?127\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/i.test(address) ||
+        /^(::f{4}:)?169\.254\.([0-9]{1,3})\.([0-9]{1,3})$/i.test(address) ||
+        /^f[cd][0-9a-f]{2}:/i.test(address) ||
+        /^fe80:/i.test(address) ||
+        /^::1$/.test(address) ||
+        /^::$/.test(address);
+}
+
+function isPublic(address: string) {
+    return !isPrivate(address);
+}
+
+function isLoopBack(address: string) {
+    return /^(::f{4}:)?127\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})/
+            .test(address) ||
+        /^fe80::1$/.test(address) ||
+        /^::1$/.test(address) ||
+        /^::$/.test(address);
+};
+
+function loopBack(standard: 4 | 6 = 4) {
+    if (standard !== 4 && standard !== 6) {
+        throw new Error(`loopBack error, expect standard to be 4 or 6, got ${standard}`);
+    }
+    return standard === 4 ? '127.0.0.1' : 'fe80::1';
+}
+
+export function getInternalIP(standard: 4 | 6 = 4): string | null {
+    if (standard !== 4 && standard !== 6) {
+        throw new Error(`getInternalAddr error, expect standard to be 4 or 6, got ${standard}`);
+    }
+
+    const interfaces = os.networkInterfaces();
+
+    const ips = Object.keys(interfaces).map(name => {
+        const addresses = interfaces[name].filter(info => {
+            const familyGot = info.family.toLowerCase();
+            return familyGot === `ipv${standard}`
+                && !isLoopBack(info.address);
+        });
+
+        return (addresses[0] || {} as any).address;
+    }).filter(Boolean);
+
+    return ips[0] || loopBack(standard);
+}
+
+
 /**
  * get the public IPV4 address
  * @param {string[]} hosts - custom server list
  * @param {number} timeoutMs - timeout in ms, default: 15000ms
  * @return {Promise<string>} ip address
  */
-export async function getPublicIP(hosts?: string[], timeoutMs: number = 15000): Promise<string> {
+export async function getExternalIP(hosts?: string[], timeoutMs: number = 15000): Promise<string> {
     return await Promise.race([
             "https://ipinfo.io/ip",
             "https://ip.cn",
