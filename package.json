@@ -1,8 +1,9 @@
 {
-  "name": "pub-ip",
+  "name": "ip-public",
   "version": "1.0.0",
   "description": "Get your public IPV4 address, also works well in mainland China.",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./lib/ && npx tsc",
@@ -15,6 +16,7 @@
   },
   "keywords": [
     "public-ip",
+    "ip-public",
     "ip",
     "external-ip",
     "ip-address"
@@ -29,5 +31,9 @@
     "rimraf": "^2.6.3",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "axios": "^0.19.0"
   }
 }
