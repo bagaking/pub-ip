@@ -1,0 +1,33 @@
+{
+  "name": "pub-ip",
+  "version": "1.0.0",
+  "description": "Get your public IPV4 address, also works well in mainland China.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf ./lib/ && npx tsc",
+    "lint": "tslint --fix --project .",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bagaking/pub-ip.git"
+  },
+  "keywords": [
+    "public-ip",
+    "ip",
+    "external-ip",
+    "ip-address"
+  ],
+  "author": "bagaking <kinghand@foxmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bagaking/pub-ip/issues"
+  },
+  "homepage": "https://github.com/bagaking/pub-ip#readme",
+  "devDependencies": {
+    "rimraf": "^2.6.3",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
+  }
+}
