@@ -1,6 +1,7 @@
 import {AxiosInstance} from "axios";
 import axios from "axios";
 import * as os from "os";
+import {Error} from "tslint/lib/error";
 
 const cache: { [baseUrl: string]: AxiosInstance } = {};
 
@@ -76,6 +77,33 @@ export function getInternalIP(standard: 4 | 6 = 4): string | null {
     return ips[0] || loopBack(standard);
 }
 
+export function forMs(ms: number) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
+async function race<T>(ps: Promise<T>[]) {
+    let retIp: T | null = null;
+    let count = 0;
+    for (let i in ps) {
+        ps[i].then(ip => {
+            if (!retIp) {
+                retIp = ip;
+            }
+            count += 1;
+        }).catch(() => {
+            count += 1;
+        });
+    }
+    while (count < ps.length) {
+        if(retIp) {
+            return retIp;
+        }
+        await forMs(50);
+    }
+    return retIp;
+}
 
 /**
  * get the public IPV4 address
@@ -84,7 +112,7 @@ export function getInternalIP(standard: 4 | 6 = 4): string | null {
  * @return {Promise<string>} ip address
  */
 export async function getExternalIP(hosts?: string[], timeoutMs: number = 15000): Promise<string> {
-    return await Promise.race([
+    return await race([
             "https://ipinfo.io/ip",
             "https://ip.cn",
             "http://icanhazip.com/",
@@ -104,7 +132,7 @@ export async function getExternalIP(hosts?: string[], timeoutMs: number = 15000)
                     throw new Error(`rsp data error, got empty`);
                 }
                 return rspData.match(/\d+\.\d+\.\d+\.\d+/)[0];
-            }).catch()
+            })
         )
     );
 }
