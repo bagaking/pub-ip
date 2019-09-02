@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha ./test",
     "build": "rimraf ./lib/ && npx tsc",
     "lint": "tslint --fix --project .",
     "prepublishOnly": "npm run build"
@@ -29,6 +29,7 @@
   "homepage": "https://github.com/bagaking/pub-ip#readme",
   "devDependencies": {
     "@types/node": "^12.7.1",
+    "mocha": "^6.2.0",
     "rimraf": "^2.6.3",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3"
