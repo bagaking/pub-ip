@@ -1,6 +1,6 @@
 {
   "name": "ip-public",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Get your public IPV4 address, also works well in mainland China.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -31,7 +31,6 @@
     "@types/node": "^12.7.1",
     "mocha": "^6.2.0",
     "rimraf": "^2.6.3",
-    "tslint": "^5.18.0",
     "typescript": "^3.5.3"
   },
   "dependencies": {

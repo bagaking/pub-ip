@@ -1,7 +1,6 @@
 import {AxiosInstance} from "axios";
 import axios from "axios";
 import * as os from "os";
-import {Error} from "tslint/lib/error";
 
 const cache: { [baseUrl: string]: AxiosInstance } = {};
 
