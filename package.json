@@ -1,11 +1,11 @@
 {
   "name": "ip-public",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Get your public IPV4 address, also works well in mainland China.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "mocha ./test",
+    "test": "npm run build && mocha ./test",
     "build": "rimraf ./lib/ && npx tsc",
     "lint": "tslint --fix --project .",
     "prepublishOnly": "npm run build"
