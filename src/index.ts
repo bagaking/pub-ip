@@ -23,7 +23,7 @@ function getClient(baseURL: string = "", timeout: number = 17000) {
     return client;
 }
 
-function isPrivate(address: string) {
+export function isPrivate(address: string) {
     return /^(::f{4}:)?10\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/i
             .test(address) ||
         /^(::f{4}:)?192\.168\.([0-9]{1,3})\.([0-9]{1,3})$/i.test(address) ||
@@ -37,13 +37,12 @@ function isPrivate(address: string) {
         /^::$/.test(address);
 }
 
-function isPublic(address: string) {
+export function isPublic(address: string) {
     return !isPrivate(address);
 }
 
-function isLoopBack(address: string) {
-    return /^(::f{4}:)?127\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})/
-            .test(address) ||
+export function isLoopBack(address: string) {
+    return /^(::f{4}:)?127\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})/.test(address) ||
         /^fe80::1$/.test(address) ||
         /^::1$/.test(address) ||
         /^::$/.test(address);
@@ -54,6 +53,12 @@ function loopBack(standard: 4 | 6 = 4) {
         throw new Error(`loopBack error, expect standard to be 4 or 6, got ${standard}`);
     }
     return standard === 4 ? '127.0.0.1' : 'fe80::1';
+}
+
+function forMs(ms: number) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
 }
 
 export function getInternalIP(standard: 4 | 6 = 4): string | null {
@@ -76,11 +81,6 @@ export function getInternalIP(standard: 4 | 6 = 4): string | null {
     return ips[0] || loopBack(standard);
 }
 
-export function forMs(ms: number) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
-}
 
 async function race<T>(ps: Promise<T>[]) {
     let retIp: T | null = null;
